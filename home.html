@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Asistencia San Viator</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            background-image: url('ESCUDO.PNG'); /* Ruta de la imagen de fondo */
+            background-size: cover; /* Para que la imagen cubra toda la pantalla */
+            background-position: center; /* Centra la imagen de fondo */
+            background-repeat: no-repeat; /* Evita que la imagen se repita */
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        .form-container {
+            background-color: rgba(255, 255, 255, 0.9); /* Fondo blanco con transparencia */
+            padding: 20px;
+            border-radius: 10px;
+            max-width: 600px;
+            margin: 50px auto; /* Centrar el formulario vertical y horizontalmente */
+            box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.9); /* Sombra alrededor del formulario */
+        }
+
+        .form-container input[type="text"],
+        .form-container select,
+        .form-container input[type="date"] {
+            width: calc(100% - 20px); /* Ajustar el ancho de los campos */
+            padding: 10px;
+            margin: 5px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box; /* Incluye el padding y el border en el ancho total */
+        }
+
+        .form-container textarea {
+            width: calc(100% - 20px); /* Ajustar el ancho del textarea */
+            padding: 10px;
+            margin: 5px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box; /* Incluye el padding y el border en el ancho total */
+            resize: vertical; /* Permite cambiar el tamaño verticalmente */
+        }
+
+        .buttons {
+            text-align: center;
+        }
+
+        .buttons button {
+            padding: 10px 20px;
+            margin: 5px;
+            border: none;
+            border-radius: 5px;
+            background-color: #007BFF;
+            color: white;
+            cursor: pointer;
+        }
+
+        .buttons button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="overlay"></div> <!-- Capa semitransparente -->
+    <div class="form-container">
+        <h2>Registro de Asistencia Escolar Colegio San Viator</h2>
+        <form id="schoolForm" action="procesar.php" method="POST"> <!-- Aquí se agregó el action y method -->
+            <!-- Días del Colegio -->
+            <label for="diaColegio">Día del Colegio:</label>
+            <select id="diaColegio" name="diaColegio">
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+                <option value="6">6</option>
+                <option value="7">7</option>
+                <option value="8">8</option>
+                <option value="9">9</option>
+                <option value="10">10</option>
+            </select>
+
+            <!-- Calendario para seleccionar la fecha -->
+            <label for="fecha">Fecha:</label>
+            <input type="date" id="fecha" name="fecha" required>
+
+            <!-- Selección de Curso -->
+            <label for="curso">Curso:</label>
+            <select id="curso" name="curso" onchange="mostrarEstudiantes(this.value)">
+                <option value="" disabled selected>Selecciona un curso</option>
+                <option value="9-30">9-30</option>
+                <option value="9-31">9-31</option>
+                <option value="9-32">9-32</option>
+                <option value="10-33">10-33</option>
+                <option value="10-34">10-34</option>
+                <option value="11-36">11-36</option>
+                <option value="11-38">11-38</option>
+            </select>
+
+            <!-- Lista de Estudiantes -->
+            <label for="estudiantes">Estudiantes:</label>
+            <select id="estudiantes" name="estudiantes[]" multiple>
+                <!-- Los estudiantes se llenarán dinámicamente según el curso seleccionado -->
+            </select>
+
+            <!-- Campo de Nombre del Docente -->
+            <label for="docente">Nombre del Docente:</label>
+            <input type="text" id="docente" name="docente" placeholder="Ingrese el nombre y apellidos del docente" required>
+
+            <!-- Motivo de la Inasistencia -->
+            <label for="motivo">Motivo de la Inasistencia:</label>
+            <select id="motivo" name="motivo">
+                <option value="" disabled selected>Selecciona el motivo</option>
+                <option value="Llegada Tarde">Llegada Tarde</option>
+                <option value="Permiso">Permiso</option>
+                <option value="Enfermedad">Enfermedad</option>
+                <option value="Fuera del País">Fuera del País</option>
+            </select>
+
+            <!-- TextView para estudiantes seleccionados -->
+            <label for="textView">Estudiantes Registrados:</label>
+            <textarea id="textView" name="textView" rows="10" readonly></textarea>
+
+            <!-- Lista de Estudiantes Registrados -->
+            <label for="estudiantesRegistrados">Estudiantes Registrados (Lista):</label>
+            <select id="estudiantesRegistrados" name="estudiantesRegistrados">
+                <!-- Los estudiantes registrados se llenarán dinámicamente -->
+            </select>
+
+            <!-- Botones -->
+            <br><br>
+            <div class="buttons">
+                <button type="button" onclick="registrar()">Registrar</button>
+                <button type="button" onclick="eliminar()">Eliminar</button>
+                <button type="reset">Limpiar</button> <!-- Botón para limpiar el formulario -->
+                <button type="submit">Enviar</button>
+            </div>
+        </form>
+    </div>
+    <script src="estudiantes.js"></script>
+    <script>
+        // Limpia el formulario al cargar si se ha redirigido desde la página de éxito
+        window.onload = function() {
+            // En este caso, se está redirigiendo a la página del formulario desde success.html
+            // y se limpia el formulario.
+            if (window.location.search.includes('form=clear')) {
+                document.getElementById('schoolForm').reset();
+                // Eliminar parámetro de la URL
+                history.replaceState({}, document.title, "/home.html");
+            }
+        };
+    </script>
+</body>
+</html>

@@ -1,0 +1,30 @@
+function mostrarEstudiantes(curso) {
+    const estudiantes = {
+        "9-30": ["Estudiante A1", "Estudiante A2"],
+        "9-31": ["Estudiante B1", "Estudiante B2"],
+        "9-32": ["Estudiante C1", "Estudiante C2"],
+        "10-33": ["Estudiante D1", "Estudiante D2"],
+        "10-34": ["Estudiante E1", "Estudiante E2"],
+        "11-36": ["Estudiante F1", "Estudiante F2"],
+        "11-38": ["Estudiante G1", "Estudiante G2"]
+    };
+    const estudiantesSelect = document.getElementById('estudiantes');
+    estudiantesSelect.innerHTML = "";
+
+    estudiantes[curso].forEach(function(estudiante) {
+        const option = document.createElement('option');
+        option.value = estudiante;
+        option.text = estudiante;
+        estudiantesSelect.appendChild(option);
+    });
+}
+
+function registrar() {
+    const estudiantesSeleccionados = Array.from(document.getElementById('estudiantes').selectedOptions)
+                                           .map(option => option.text);
+    document.getElementById('textView').value = estudiantesSeleccionados.join(", ");
+}
+
+function modificar() {
+    // Lógica para modificar la selección
+}
